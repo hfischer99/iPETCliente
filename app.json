@@ -1,0 +1,12 @@
+{
+  "name": "iPetCliente",
+  "displayName": "iPetCliente",
+  "expo": {
+    "name": "iPetCliente",
+    "slug": "iPetCliente",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
