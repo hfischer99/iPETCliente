@@ -15,13 +15,18 @@ import {
 } from './styles'
 
 export default function Welcome (props) {
+  console.disableYellowBox = true;
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  async function saveUser(user) {
-    await AsyncStorage.setItem('@ListApp:userToken', JSON.stringify(user))
+  async function onValueChange(item, selectedValue) {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
   }
 
   async function signIn() {
@@ -39,7 +44,10 @@ export default function Welcome (props) {
       const response = await api.post('/v1/account/login', credentials)
 
       const user = response.data
-      await saveUser(user)
+      await onValueChange('id_token',user.token)
+      await onValueChange('nome',user.user.nome)
+      await onValueChange('foto',user.user.foto_perfil)
+      await onValueChange('id',user.user.id.toString())
       const resetAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: 'App', params: {credentials}})],
@@ -59,6 +67,18 @@ export default function Welcome (props) {
       setLoading(false)
       setErrorMessage('Usuário não existe')
     }
+  }
+
+  async function registrar() {
+   
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Register'})],
+      })
+
+     
+      props.navigation.dispatch(resetAction)
+   
   }
 
   return (
@@ -83,7 +103,7 @@ export default function Welcome (props) {
    
 
       <TextInformation>
-        Para continuar, precisamos que você informe seu CPF e Senha.
+        Para continuar, precisamos que você informe seu E-Mail e Senha.
       </TextInformation>
 
       {!!errorMessage && <Error>{errorMessage}</Error>}
@@ -113,6 +133,13 @@ export default function Welcome (props) {
             <ActivityIndicator size="small" color="#836FFF" />
           ) : (
             <ButtonText>Prosseguir</ButtonText>
+          )}
+        </Button>
+        <Button onPress={registrar}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#836FFF" />
+          ) : (
+            <ButtonText>Cadastre-se</ButtonText>
           )}
         </Button>
       </Form>
