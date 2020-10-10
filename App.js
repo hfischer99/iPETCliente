@@ -15,12 +15,30 @@ import Register from './src/Pages/User/register'
 import Servico from './src/screen/Servico'
 import Agendamento from './src/screen/Agendamento'
 import Card from './src/screen/Card'
+import PetInsert from './src/screen/Pet/register';
+import Pet from './src/screen/Pet/index';
+import EnderecoInsert from './src/screen/Endereco/enderecoInsert';
+import EnderecoIndex from './src/screen/Endereco/index';
+import EnderecoEdit from './src/screen/Endereco/enderecoEdit';
+import PetEdit from './src/screen/Pet/edit';
+import PetCompartilhado from './src/screen/Pet/compartilhado'
+import Solicitacao from './src/screen/Solicitacoes/index';
+import Avalia from './src/screen/Solicitacoes/Avalia';
 Icon.loadFont();
 
 import SignIn from './src/screen/SignIn'
 import AuthLoadingScreen from './src/screen/SignIn/AuthLoadingScreen'
 
 const MainStack = createDrawerNavigator({
+  Menu:{
+    screen: Teste,
+    navigationOptions:{
+      drawerIcon:
+      <Icon  name='home' size={20}
+      ></Icon>
+    }
+  },
+  
   Editar:{
     screen: Editar,
     navigationOptions:{
@@ -30,12 +48,22 @@ const MainStack = createDrawerNavigator({
 
     }
   },
-  Menu:{
-    screen: Teste,
+  Pet:{
+    screen: Pet,
     navigationOptions:{
       drawerIcon:
       <Icon  name='paw' size={20}
-      ></Icon>
+      />
+
+    }
+  },
+  Endereços:{
+    screen: EnderecoIndex,
+    navigationOptions:{
+      drawerIcon:
+      <Icon  name='map' size={20}
+      />
+
     }
   },
   
@@ -74,11 +102,20 @@ const MainStack = createDrawerNavigator({
       Servico: Servico,
       Agendamento: Agendamento,
       Card:Card,
+      EnderecoInsert: EnderecoInsert,
+      Pet: Pet,
+      PetInsert: PetInsert,
+      PetEdit: PetEdit,
+      PetCompartilhado: PetCompartilhado,
+      Endereco: EnderecoIndex,
+      EnderecoEdit: EnderecoEdit,
+      Avalia: Avalia,
+      Solicitacao: Solicitacao,
       
       Teste: Teste
     },
     {
-      initialRouteName: 'Teste',
+      initialRouteName: 'Pet',
       headerMode: 'none',
       header: null,
     },
