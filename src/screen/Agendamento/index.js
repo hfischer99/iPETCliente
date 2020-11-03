@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, Image, ScrollView, Alert } from 'react-native';
 import { Header } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import { Container } from 'native-base';
 import DatePicker from 'react-native-datepicker'
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 //import { ScrollView } from 'react-native-gesture-handler';
 
 const FilterScreen = props => {
   const catId = props.navigation.getParam('categoryId');
+  const [Data, setData] = useState([
+    time = ''
+  ]);
   var date = new Date().getDate();
   var month = new Date().getMonth()
   var year = new Date().getFullYear();
@@ -28,18 +32,20 @@ const FilterScreen = props => {
     containerStyle={{ width: '100%', backgroundColor: '#836FFF'}}
     centerComponent={{ text: 'Agendamento - ' + catId.nomeFantasia, style: { color: '#fff' } }}
     leftComponent={<Ionicons name="md-arrow-round-back" size={25} color="white" onPress={() => props.navigation.goBack(null)}/>}
-    /> 
+    />
+      <View style={{padding:10}}/>
       <View style={styles.details}>
         <DatePicker
           style={{width: 250, textAlign:'center'}}
           //date={this.state.date}
           mode="date"
-          placeholder="Selecione uma data para Agendamento"
+          placeholder="Selecione uma data"
           format="YYYY-MM-DD"
           minDate= {year + '-' + monthMax + '-' + date}
           maxDate={year + '-' + monthMaxDate + '-' + date}
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
+          androidMode="spinner"
           customStyles={{
             dateIcon: {
               position: 'absolute',
@@ -54,6 +60,18 @@ const FilterScreen = props => {
           //onDateChange={(date) => {this.setState({date: date})}}
         />
       </View>
+      <View style={{padding:10}}/>
+      <View style={styles.details}>
+      <DateTimePicker
+          testID="dateTimePicker"
+          value={Data.time}
+          mode="time"
+          is24Hour={true}
+          display="default"
+          // onChange={onChange}
+        />
+      </View>
+      <View style={{padding:100}}/>
       <Button
           title="AGENDAR SERVIÇO"
           color="#836FFF"

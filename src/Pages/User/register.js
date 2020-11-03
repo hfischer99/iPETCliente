@@ -153,60 +153,61 @@ const SignInScreen = props => {
     }
 
     const registro = () => {
-        fetch('http://www.ipet.kinghost.net/v1/account/Adicionar',{
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-            body: JSON.stringify({
-                "Nome": data.nome,
-                "CPF": data.cpf,
-                "Data_nascimento": data.dt_nascimento,
-                "Email": data.dt_nascimento,
-                "Telefone": data.telefone,
-                "Tipo_usuario": "1",
-                "Password": data.password,
-                "Role" : "cliente"
+        console.log("esta é a data ",data.nome)
+        // fetch('http://www.ipet.kinghost.net/v1/account/Adicionar',{
+        //     method: "POST",
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //       },
+        //     body: JSON.stringify({
+        //         "Nome": data.nome,
+        //         "CPF": data.cpf,
+        //         "Data_nascimento": data.dt_nascimento,
+        //         "Email": data.dt_nascimento,
+        //         "Telefone": data.telefone,
+        //         "Tipo_usuario": "1",
+        //         "Password": data.password,
+        //         "Role" : "cliente"
 
-            })
-          })
+        //     })
+        //   })
            
-           .then((response) => response.json())
-           .then((responseJson) => {
-             console.log("responsejson",responseJson)
-             if(responseJson == "CPF JÁ CADASTRADO"){
-                setData({
-                    ...data,
-                    cpf: "teste",
-                    check_textInputChangeCPF: false
-                });
+        //    .then((response) => response.json())
+        //    .then((responseJson) => {
+        //      console.log("responsejson",responseJson)
+        //      if(responseJson == "CPF JÁ CADASTRADO"){
+        //         setData({
+        //             ...data,
+        //             cpf: "teste",
+        //             check_textInputChangeCPF: false
+        //         });
 
-                Alert.alert(
-                    'Registro',
-                    'O CPF INFORMADO JÁ EXISTE EM NOSSA BASE.',
-                    [
-                      {text: 'Ok', onPress: () => {console.log("continua cadastro")}},                
-                      {text: 'Resetar senha', onPress: () => console.log('Vai para tela de reset de senha')},
-                    ],
-                    { cancelable: false }
-                  )
-             } else {
-                Alert.alert(
-                    'Registro',
-                    'Usuario cadastrado.',
-                    [
-                      {text: 'Ok', onPress: () => props.navigation.navigate({
-                        routeName: 'SignIn'})},                
+        //         Alert.alert(
+        //             'Registro',
+        //             'O CPF INFORMADO JÁ EXISTE EM NOSSA BASE.',
+        //             [
+        //               {text: 'Ok', onPress: () => {console.log("continua cadastro")}},                
+        //               {text: 'Resetar senha', onPress: () => console.log('Vai para tela de reset de senha')},
+        //             ],
+        //             { cancelable: false }
+        //           )
+        //      } else {
+        //         Alert.alert(
+        //             'Registro',
+        //             'Usuario cadastrado.',
+        //             [
+        //               {text: 'Ok', onPress: () => props.navigation.navigate({
+        //                 routeName: 'SignIn'})},                
                       
-                    ],
-                    { cancelable: false }
-                  )
-             }
+        //             ],
+        //             { cancelable: false }
+        //           )
+        //      }
             
-           }
-           )
-           .catch((error) => {console.log("erro fetch",error)});
+        //    }
+        //    )
+        //    .catch((error) => {console.log("erro fetch",error)});
      
            console.log({...data})
          };

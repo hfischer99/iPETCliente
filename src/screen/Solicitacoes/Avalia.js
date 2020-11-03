@@ -4,11 +4,9 @@ import { Header, Avatar } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import { color } from 'react-native-reanimated';
-// import { Picker } from 'native-base';
-//import { ScrollView } from 'react-native-gesture-handler';
 
 const FilterScreen = props => {
-  const catId = props.navigation.getParam('categoryId');
+  const catId = props.navigation.getParam('SolData');
   const Separator = () => (
     <View style={styles.separator} />
   );
@@ -19,346 +17,178 @@ const FilterScreen = props => {
   })
   const [endereco, setEndereco] = React.useState({
     endereco: [],
-    select:[],
+    select: [],
   })
   const [data, setData] = React.useState({
-    color1: 'gray',
-    color2: 'gray',
     vlrBtn: 0,
+    id: catId.Id,
+    id_ServicoEmpresa: catId.id_ServicoEmpresa,
     statusMotorista: catId.motorista,
     statusFormaPag: catId.formapagamento,
-    color1moto: 'gray',
-    color2moto: 'gray',
-    vlrBtnmoto: 0,
-    distancia: 2,
-    precoKm: 10,
+    status: catId.status,
     valorFrete: 0,
+    avaliacao: catId.avaliacao,
     valorMini: catId.valorMini,
-    valorP: catId.valorP,
-    valorM: catId.valorM,
-    valorG: catId.valorG,
     valor: 0,
     valorTotal: 0,
-    latitudeOrigem: catId.latitude,
-    longitudeOrigem: catId.longitude,
-    resposta: "O",
-    teste: ['1', '2', '3'],
+    FreteValor: 0,
+    motorista: catId.motorista,
   });
+  const Entrega = () => {
+    if (data.motorista == "1") {
+      return (
+        <View>
+          <Separator />
+          <View style={{ flexDirection: 'row', widdht: 150, padding: 15 }}>
+            <View style={{ textAlign: 'center', alignItems: 'center' }}>
+              <Text style={{ textAlign: 'center', alignItems: 'center', fontSize: 15 }}>Endereço PET: {catId.endereco} - {catId.numero} </Text>
+            </View>
+          </View>
+        </View>
 
-  const Check = (btn) => {
-    if (btn == "1") {
-      setData({ ...data, color1: 'green', color2: 'gray', vlrBtn: 1 })
+      );
     } else {
-      setData({ ...data, color1: 'gray', color2: 'green', vlrBtn: 2 })
+      return (
+        <View>
+        </View>
+      );
     }
   }
-  const CheckMoto = (btn) => {
-    if (btn == "1") {
-      setData({ ...data, color1moto: 'green', color2moto: 'gray', vlrBtnmoto: 1 })
+
+  const Avaliacao = async (avaliacao) => {
+    console.log("entrei", avaliacao)
+    await fetch('http://www.ipet.kinghost.net/v1/account/Avaliacao', {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+             "id_Solicitacoes": parseInt(data.id),
+             "id_ServicoEmpresa": parseInt(data.id_ServicoEmpresa),
+             "valoravaliacao": avaliacao
+     
+        
+            })
+        })
+            .then((responseJson) => {
+             console.log("resposta",JSON.stringify(responseJson));
+                  Alert.alert(
+                    'Avaliação',
+                    'Obrigado pela sua Avaliação!',
+                    [
+                        {
+                            text: 'Ok', onPress: () => props.navigation.navigate({
+                                routeName: 'Solicitacao'
+                            })
+                        },
+
+                    ],
+                    { cancelable: false }
+                )   
+            }
+            )
+            .catch((error) => { console.log("erro fetch", error) }); 
+ }
+
+ const ratingCompleted = (rating) => {
+  console.log("Rating is: " + rating)
+}
+
+  const CheckAvaliacao = () => {
+    if (data.avaliacao == 0 & data.status == "Concluído") {
+      return (
+        <View>
+          <Text style={styles.details}>AVALIE O SERVIÇO: </Text>
+          <Rating startingValue={catId.avaliacao}  onFinishRating={Avaliacao} imageSize={20} style={{ justifyContent: 'center', paddingVertical: 5, paddingTop: 20, fontSize: 14 }} />
+        </View>
+      );
+    } else if (data.avaliacao != 0 & data.status == "Concluído") {
+      return (
+        <View >
+          <Text style={styles.details}>SUA AVALIAÇÃO:</Text>
+          <Rating startingValue={catId.avaliacao} readonly='False' imageSize={20} style={{ justifyContent: 'center', paddingVertical: 5, paddingTop: 20, fontSize: 14 }} />
+        </View>
+      );
     } else {
-      setData({ ...data, color1moto: 'gray', color2moto: 'green', vlrBtnmoto: 2 })
+      return (
+        <View>
+        </View>
+      );
     }
+
   }
 
-  const pegaPet = async () => {
-    var temp = [];
-    await fetch('http://www.ipet.kinghost.net/v1/account/PegaPet', {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "id": 10,
-
-      })
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        // console.log(responseJson);
-        // setData({endereco: JSON.parse(responseJson)});
-        temp = JSON.parse(responseJson);
-
-      }
-      )
-      .catch((error) => { console.log("erro fetch", error) });
-    setPet({ ...pet, pet: temp });
-     if(data.statusMotorista == "1"){
-      pegaEnd()
-    }
-  }
-  const FreteValor = () => {
-    if (data.statusMotorista == "1") {
+  const CheckFrete = () => {
+    if (data.motorista == "1") {
       return (
         <View style={styles.leftComponent}>
-          <Text style={styles.titleLeft}>Frete:  R${data.valorFrete}</Text>
+          <Text style={styles.titleLeft}>Frete:  R${catId.valor_frete}</Text>
         </View>
       );
     } else {
       return (
-        <View></View>
-      );
-    }
-  }
-
-  const CheckMotorista = () => {
-    if (data.statusMotorista == "1") {
-      return (
-        <View style={styles.details}>
-          <Button title="Quero motorista" color={data.color1moto} onPress={() => CheckMoto("1")} />
-          <Button title="Não quero motorista" color={data.color2moto} onPress={() => CheckMoto("2")} />
+        <View>
         </View>
       );
     }
-    else {
-      return (
-        <View style={styles.details}>
-          <Text>Não disponível</Text>
-        </View>
-      );
-    }
-  }
-
-  const CheckEndereco = () => {
-    if (data.statusMotorista == "1") {
-      return (
-        <View style={styles.details}>
-        <Text style={{ textAlign: 'center', alignItems: 'center' }}>Escolha o endereço de busca:</Text>
-        <View/>
-        <View style={styles.details}></View>
-        <Picker
-        selectedValue={selectedValue}
-        style={{ height: 50, width: 150 }}
-        onValueChange={(itemValue, itemIndex) => calculaValorFrete(itemValue)}
-      >
-        <Picker.Item label=" " value="js" />
-        {endereco.endereco.map(message => (
-          <Picker.Item label={message.endereco} value={message} />
-        ))}
-        
-      </Picker>
-        </View>
-      );
-    } else {
-      return (
-        <View></View>
-      );
-    }
-  }
-  const pegaEnd = async () => {
-    var end = [];
-    await fetch('http://www.ipet.kinghost.net/v1/account/PegaEndereco', {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "id": 11,
-
-      })
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        //console.log(responseJson);
-        end = JSON.parse(responseJson);
-      }
-      )
-      .catch((error) => { console.log("erro fetch pega end", error) });
-    //console.log(testeEndereco)
-    await setEndereco({ ...endereco, endereco: end });
-    // calculaValorFrete()
-  }
-
-  const CheckFormaPagt = () => {
-    if (data.statusFormaPag == "1") {
-      return (
-        <View style={styles.details}>
-          <Button title="Dinheiro / Cartão" color={data.color1} onPress={() => Check("1")} />
-          <Button title="Pagseguro" color={data.color2} onPress={() => Check("2")} />
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={styles.details}>
-          <Button title="Dinheiro / Cartão" color={data.color1} onPress={() => Check("1")} />
-        </View>
-      );
-    }
-  }
-
-  const SelecionaPet = async (dog) => {
-    var calcula = 0;
-    if(dog.porte == "Mini"){
-      calcula = parseFloat(data.valorMini) + parseFloat(data.valorFrete);
-      await setData({...data,valor: data.valorMini, valorTotal: calcula.toFixed(2)})
-    }else if(dog.porte == "P"){
-      calcula = parseFloat(data.valorP) + parseFloat(data.valorFrete);
-      await setData({...data,valor: data.valorP, valorTotal: calcula.toFixed(2)})
-    }else if (dog.porte == "M"){
-      calcula = parseFloat(data.valorM) + parseFloat(data.valorFrete);
-      await setData({...data,valor: data.valorM, valorTotal: calcula.toFixed(2)})
-    }else if (dog.porte == "G"){
-      calcula = parseFloat(data.valorG) + parseFloat(data.valorFrete);
-      await setData({...data,valor: data.valorG, valorTotal: calcula.toFixed(2)})
-    }
-    console.log(data.valor)
-  }
-  
-  useEffect(() => { pegaPet() }, []);
-
-  const calculaValorFrete = async (id) => {
-    setSelectedValue(id);
-    //console.log(id);
-    console.log(catId)
-    var valorF = 0;
-    var valorT = 0;
-    var soma = 0;
-    await fetch('http://www.ipet.kinghost.net/api/corridas/distanciakm', {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "latitudeOrigem": data.latitudeOrigem,
-        "longitudeOrigem": data.longitudeOrigem,
-        "latitudeDestino": id.latitude,
-        "longitudeDestino": id.longitude,
-      })
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        valorF = responseJson;
-      }
-      )
-      .catch((error) => { console.log("erro fetch", error) });
-    valorF = parseFloat(catId.precokm * valorF / 1000).toFixed(2);
-    valorT = parseFloat(data.valor);
-    soma = parseFloat(valorF) + parseFloat(valorT);
-    //console.log(soma)
-    await setData({ ...data,valorTotal:soma.toFixed(2),valorFrete: valorF });
-  }
-
-  const CheckPagina = () => {
-    if (data.vlrBtn == 0) {
-      Alert.alert(
-        '💰 Selecione forma de pagamento 💰'
-      )
-    }
-    else {
-      if (data.vlrBtn == 1) {
-        props.navigation.navigate({
-          routeName: 'Agendamento', params: {
-            categoryId: catId
-          }
-        });
-      }
-      else {
-        props.navigation.navigate({
-          routeName: 'Card', params: {
-            categoryId: catId
-          }
-        });
-      }
-    }
 
   }
 
-  //console.log(catId)
-  //const selectedCategory = CATEGORIES.find(cat => cat.id === catId);
+  // useEffect(() => { pegaPet() }, []);
+
   return (
     <View style={{ width: '100%', height: '100%' }}>
       <Header style={styles.headerContainer}
         placement="center"
         statusBarProps={{ barStyle: 'light-content', translucent: true, backgroundColor: 'transparent' }}
         containerStyle={{ width: '100%', backgroundColor: '#836FFF' }}
-        centerComponent={{ text: catId.nomeFantasia, style: { color: '#fff' } }}
+        centerComponent={{ text: "Avaliação", style: { color: '#fff' } }}
         leftComponent={<Ionicons name="md-arrow-round-back" size={25} color="white" onPress={() => props.navigation.goBack(null)} />}
       />
       <ScrollView>
-
-
         <Image source={{ uri: catId.foto }} style={styles.image} />
         <View style={styles.RightComponent}>
-            <Rating startingValue={catId.avaliacao} readonly='False' imageSize={20} style={{ justifyContent: 'center', paddingVertical: 5, paddingTop:20, fontSize: 14 }} />
         </View>
-        <Text style={styles.title}>{catId.nomeFantasia}</Text>
+        <Text style={styles.title}>{catId.nomefantasia}</Text>
         <View style={styles.details}>
-          <Text>{catId.descricao}</Text>
+          <Text>Status: {catId.status}</Text>
         </View>
-        <Separator />
-        <View style={styles.details}>
-          <View style={{ textAlign: 'center', alignItems: 'center' }}>
-            <Text style={{ textAlign: 'center', alignItems: 'center' }}>Localização Loja: {catId.bairro} - {catId.cidade}</Text>
-          </View>
-        </View> 
+        <CheckAvaliacao />
         <Separator />
         <View style={{ flexDirection: 'row', widdht: 150, padding: 15 }}>
           <View style={{ textAlign: 'center', alignItems: 'center' }}>
-            <Text style={{ textAlign: 'center', alignItems: 'center', fontSize: 15 }}>Formas de Pagamento: </Text>
+            <Text style={{ textAlign: 'center', alignItems: 'center' }}>Descrição: {catId.descricao}</Text>
           </View>
         </View>
-        <CheckFormaPagt />
-
         <Separator />
-
         <View style={{ flexDirection: 'row', widdht: 150, padding: 15 }}>
           <View style={{ textAlign: 'center', alignItems: 'center' }}>
-            <Text style={{ textAlign: 'center', alignItems: 'center', fontSize: 15 }}>Motorista: </Text>
+            <Text style={{ textAlign: 'center', alignItems: 'center' }}>PET: {catId.pet}</Text>
           </View>
         </View>
-        <CheckMotorista />
         <Separator />
-        <View style={styles.details}>
-          <Text style={{ textAlign: 'center', alignItems: 'center', fontSize: 15 }}>Escolha seu PET: </Text>
+        <View style={{ flexDirection: 'row', widdht: 150, padding: 15 }}>
+          <View style={{ textAlign: 'center', alignItems: 'center' }}>
+            <Text style={{ textAlign: 'center', alignItems: 'center', fontSize: 15 }}>Data Serviço: {catId.data} </Text>
+          </View>
         </View>
-        <View style={styles.details}>
-          <ScrollView horizontal={true} style={{ paddingTop: 30 }}>
-            {pet.pet.map(message => (
-              <View>
-                <Avatar
-                  rounded
-                  size="xlarge"
-                  onPress={() => SelecionaPet(message)}
-                  title={message.nome}
-                  activeOpacity={0.7}
-                  source={{ uri: message.foto} }
-                  containerStyle={{ paddingLeft: 20 }}
-                />
-                <Text>{message.nome} - {message.raca}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+        <Entrega />
         <Separator />
-        <CheckEndereco />
-        <Separator />
-
         <View style={{
           flexDirection: 'row', widdht: 150, padding: 15
         }}>
           <View style={styles.leftComponent}>
-            <Text style={styles.titleLeft}>Serviço:  R${data.valor}</Text>
-            <Text style={styles.titleLeft}>Total: {data.valorTotal}</Text>
+            <Text style={styles.titleLeft}>Serviço:  R${catId.valor_servico}</Text>
+            <View style={{padding:5}}></View>
+            <Text style={styles.titleLeft}>Total: R${catId.valor_total}</Text>
           </View>
-          <FreteValor />  
+          <CheckFrete/>
         </View>
         <View style={{
           flexDirection: 'row', widdht: 150, padding: 8
         }}>
-          <View style={styles.leftComponent}>
-            <Button
-              title="SOLICITAR SERVIÇO"
-              color="#836FFF"
-              onPress={() => {
-                // console.log(pet);
-                //console.log(data.endereco);
-                 CheckPagina()
-              }}
-            />
-          </View>
+          
         </View>
       </ScrollView>
     </View>
@@ -370,7 +200,7 @@ FilterScreen.navigationOptions = (navigationData) => {
   const catId = navigationData.navigation.getParam('categoryId');
   //const selectedCategory = CATEGORIES.find(cat => cat.id === catId);
   return {
-    headerTitle: catId.nomeFantasia
+    headerTitle: "Avaliação"
   };
 };
 

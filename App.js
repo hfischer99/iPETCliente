@@ -66,6 +66,15 @@ const MainStack = createDrawerNavigator({
 
     }
   },
+  Solicitações:{
+    screen: Solicitacao,
+    navigationOptions:{
+      drawerIcon:
+      <Icon  name='tag' size={20}
+      />
+
+    }
+  },
   
   
      
@@ -115,7 +124,7 @@ const MainStack = createDrawerNavigator({
       Teste: Teste
     },
     {
-      initialRouteName: 'Pet',
+      initialRouteName: 'SignIn',
       headerMode: 'none',
       header: null,
     },

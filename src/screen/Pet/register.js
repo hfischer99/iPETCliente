@@ -177,7 +177,7 @@ const PetScreen = props => {
                 if (responseJson == "ok") {
                     Alert.alert(
                         'Registro',
-                        'Usuario cadastrado.',
+                        'Pet cadastrado.',
                         [
                             {
                                 text: 'Ok', onPress: () => props.navigation.navigate({

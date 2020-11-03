@@ -24,7 +24,7 @@ const PetScreen = props => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "id": 10,
+        "id": 11,
 
       })
     })
@@ -40,7 +40,7 @@ const PetScreen = props => {
     setPet({ ...pet, pet: temp });
   }
 
-  useEffect(() => { pegaPet() });
+  useEffect(() => { pegaPet() },);
 
   const Separator = () => (
     <View style={styles.separator} />

@@ -26,7 +26,7 @@ const FilterScreen = props => {
       },
       body: JSON.stringify({
         "cod": data8,
-        "id_pessoa": 10,
+        "id_pessoa": 11,
       })
     })
       .then((response) => response.json())
@@ -85,7 +85,7 @@ return (
     </View>
     <View style={styles.fixToText}>
       <Button
-        title="AGENDAR SERVIÇO"
+        title="ADICIONAR PET"
         color="#836FFF"
         onPress={() => addPetCompartilhado(data8)}
       />

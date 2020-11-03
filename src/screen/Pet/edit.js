@@ -199,6 +199,23 @@ const PetScreen = props => {
            })
        })
            .then((responseJson) => {
+            if(responseJson.ok === true){
+                return(
+                    Alert.alert(
+                        'Delete',
+                        'Pet Deletado!',
+                        [
+                            {
+                                text: 'Ok', onPress: () => props.navigation.navigate({
+                                    routeName: 'Pet'
+                                })
+                            },
+    
+                        ],
+                        { cancelable: false }
+                    )   
+                );
+            }
             console.log(JSON.stringify(responseJson));
     
            }
@@ -213,7 +230,7 @@ const PetScreen = props => {
         formData.append('nome', data.nome);
         formData.append('raca', data.raca);
         formData.append('peso', data.peso);
-        formData.append('id_pessoa', 10);
+        formData.append('id_pessoa', 11);
         formData.append('data_nascimento', dataformat);
         formData.append('foto', data.foto);
         formData.append('cod', chave);
@@ -223,6 +240,23 @@ const PetScreen = props => {
             body: formData
         })
             .then((responseJson) => {
+                if(responseJson.ok === true){
+                    return(
+                        Alert.alert(
+                            'Chave',
+                            'Código de Compartilhamento:' + chave,
+                            [
+                                {
+                                    text: 'Ok', onPress: () => props.navigation.navigate({
+                                        routeName: 'Pet'
+                                    })
+                                },
+        
+                            ],
+                            { cancelable: false }
+                        )   
+                    );
+                }
                 console.log(JSON.stringify(responseJson));
                 // pegaPet();
             }
@@ -246,7 +280,7 @@ const PetScreen = props => {
                 formData.append('nome', data.nome);
                 formData.append('raca', data.raca);
                 formData.append('peso', data.peso);
-                formData.append('id_pessoa', parseInt(10));
+                formData.append('id_pessoa', parseInt(11));
                 formData.append('data_nascimento', dataformat);
                 formData.append('foto', data.foto);
                 await fetch('http://www.ipet.kinghost.net/v1/account/AlterarPet', {
@@ -254,6 +288,23 @@ const PetScreen = props => {
                     body: formData
                 })
                     .then((responseJson) => {
+                        if(responseJson.ok === true){
+                            return(
+                                Alert.alert(
+                                    'Editar',
+                                    'Pet Alterado!',
+                                    [
+                                        {
+                                            text: 'Ok', onPress: () => props.navigation.navigate({
+                                                routeName: 'Pet'
+                                            })
+                                        },
+                
+                                    ],
+                                    { cancelable: false }
+                                )   
+                            );
+                        }
                         console.log(JSON.stringify(responseJson));
 
                     }
@@ -275,7 +326,7 @@ const PetScreen = props => {
                 formData.append('nome', data.nome);
                 formData.append('raca', data.raca);
                 formData.append('peso', data.peso);
-                formData.append('id_pessoa', 10);
+                formData.append('id_pessoa', 11);
                 formData.append('data_nascimento', dataformat);
                 
                 await fetch('http://www.ipet.kinghost.net/v1/account/AlterarPet', {
@@ -283,6 +334,24 @@ const PetScreen = props => {
                     body: formData
                 })
                     .then((responseJson) => {
+                        var response = JSON.parse(responseJson)
+                        if(responseJson.ok === true){
+                            return(
+                                Alert.alert(
+                                    'Editar',
+                                    'Pet Alterado!',
+                                    [
+                                        {
+                                            text: 'Ok', onPress: () => props.navigation.navigate({
+                                                routeName: 'Pet'
+                                            })
+                                        },
+                
+                                    ],
+                                    { cancelable: false }
+                                )   
+                            );
+                        }
                         console.log(JSON.stringify(responseJson));
                     }
                     )
@@ -436,58 +505,16 @@ const PetScreen = props => {
                         <Button title="SELECIONE A IMAGEM" onPress={pickImage} color="blue" />
                         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
                     </View>
-
-
-                    <View style={styles.button}>
-                        <TouchableOpacity
-                            style={styles.signIn}
-                            onPress={() => { geraChave(data.nome, data.id) }}
-                        >
-                            <LinearGradient
-                                colors={['orange', '#bdb3fc']}
-                                style={styles.signIn}
-                            >
-                                <Text style={[styles.textSign, {
-                                    color: '#fff'
-                                }]}>COMPARTILHAR PET</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-
+                    <View style={{padding:20}}/>
+                    <View style={styles.details}>        
+                        <Button title="COMPARTILHAR PET" onPress={() => { geraChave(data.nome, data.id) }} color="#836FFF" />
+                        <Button title="EDITAR" onPress={() => { alteraPet() }} color="#836FFF" />
                     </View>
-                    <View style={styles.button}>
-                        <TouchableOpacity
-                            style={styles.signIn}
-                            onPress={() => { alteraPet() }}
-                        >
-                            <LinearGradient
-                                colors={['green', '#bdb3fc']}
-                                style={styles.signIn}
-                            >
-                                <Text style={[styles.textSign, {
-                                    color: '#fff'
-                                }]}>EDITAR</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
+                    <View style={{padding:20}}/>
+                    <View style={styles.details}>        
+                        <Button title="EXCLUIR" onPress={() => { deletaPet() }} color="gray" />
+                    </View>  
 
-
-                    </View>
-                    <View style={styles.button}>
-                        <TouchableOpacity
-                            style={styles.signIn}
-                            onPress={() => { deletaPet() }}
-                        >
-                            <LinearGradient
-                                colors={['red', '#bdb3fc']}
-                                style={styles.signIn}
-                            >
-                                <Text style={[styles.textSign, {
-                                    color: '#fff'
-                                }]}>EXCLUIR</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-
-
-                    </View>
                 </ScrollView>
             </Animatable.View>
         </View>
@@ -526,6 +553,11 @@ const styles = StyleSheet.create({
         color: '#836FFF',
         fontSize: 18
     },
+    details: {
+        flexDirection: 'row',
+        padding: 15,
+        justifyContent: 'space-around'
+      },
     action: {
         flexDirection: 'row',
         marginTop: 10,

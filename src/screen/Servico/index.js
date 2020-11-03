@@ -21,10 +21,13 @@ const FilterScreen = props => {
     endereco: [],
     select:[],
   })
+  
   const [data, setData] = React.useState({
     color1: 'gray',
     color2: 'gray',
     vlrBtn: 0,
+    id_servico_empresa: catId.id_servico_empresa,
+    empresa: catId.empresa,
     statusMotorista: catId.motorista,
     statusFormaPag: catId.formapagamento,
     color1moto: 'gray',
@@ -43,6 +46,21 @@ const FilterScreen = props => {
     longitudeOrigem: catId.longitude,
     resposta: "O",
     teste: ['1', '2', '3'],
+  });
+  const [Solicitacao, setSolicitacao] = React.useState({
+    valor_total : '',
+    valor_frete : '',
+    valor_servico:'',
+    motorista : '',
+    formapagamento :  '',
+    id_pet : '',
+    id_pessoa : '',
+    status : '',
+    id_servico_empresa : '',
+    endereco : '',
+    data : '',
+    id_empresa : '',
+    empresa: '',
   });
 
   const Check = (btn) => {
@@ -69,7 +87,7 @@ const FilterScreen = props => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "id": 10,
+        "id": 11,
 
       })
     })
@@ -242,12 +260,21 @@ const FilterScreen = props => {
   }
 
   const CheckPagina = () => {
+    setSolicitacao({...Solicitacao, valor_total: data.valorTotal, valor_frete: data.valorFrete, valor_servico:data.valorFrete, formapagamento:data.vlrBtn,id_pessoa: 10, motorista:data.vlrBtnmoto, empresa: data.empresa})
+    console.log(Solicitacao)
+    console.log(catId)
     if (data.vlrBtn == 0) {
       Alert.alert(
         '💰 Selecione forma de pagamento 💰'
       )
     }
+    else if(data.valor === 0){
+      Alert.alert(
+        '🐾 Selecione seu pet 🐾'
+      )
+    }
     else {
+      console.log(Solicitacao)
       if (data.vlrBtn == 1) {
         props.navigation.navigate({
           routeName: 'Agendamento', params: {
@@ -255,13 +282,13 @@ const FilterScreen = props => {
           }
         });
       }
-      else {
-        props.navigation.navigate({
-          routeName: 'Card', params: {
-            categoryId: catId
-          }
-        });
-      }
+      // else {
+      //   props.navigation.navigate({
+      //     routeName: 'Card', params: {
+      //       categoryId: catId
+      //     }
+      //   });
+      // }
     }
 
   }

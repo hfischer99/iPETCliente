@@ -13,34 +13,33 @@ const PetScreen = props => {
     pet: []
   });
   const [data, setData] = React.useState({
-
+    solicitacao: [],
   });
-  const pegaPet = async () => {
-    var temp = [];
-    await fetch('http://www.ipet.kinghost.net/v1/account/PegaPet', {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "id": 10,
+  const pegaSolicitacao = async () => {
 
-      })
+    await fetch('http://www.ipet.kinghost.net/v1/account/PegaSolicitacao', {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "id_pessoa": 10,
+
+        })
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        // console.log(responseJson);
-        // setData({endereco: JSON.parse(responseJson)});
-        temp = JSON.parse(responseJson);
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson)
+          setData({...data, solicitacao: JSON.parse(responseJson) })
 
-      }
-      )
-      .catch((error) => { console.log("erro fetch", error) });
-    setPet({ ...pet, pet: temp });
+        }
+        )
+        .catch((error) => { console.log("erro fetch", error) });
+
   }
 
-  useEffect(() => { pegaPet() });
+  useEffect(() => { pegaSolicitacao() }, []);
 
   const Separator = () => (
     <View style={styles.separator} />
@@ -53,45 +52,25 @@ const PetScreen = props => {
         placement="center"
         statusBarProps={{ barStyle: 'light-content', translucent: true, backgroundColor: 'transparent' }}
         containerStyle={{ width: '100%', backgroundColor: '#836FFF' }}
-        centerComponent={{ text: 'MEU PET', style: { color: '#fff' } }}
+        centerComponent={{ text: 'SOLICITAÇÕES', style: { color: '#fff' } }}
         leftComponent={<Ionicons name="md-arrow-round-back" size={25} color="white" onPress={() => props.navigation.goBack(null)} />}
       />
       <ScrollView>
-        <View style={styles.details}>
-          <Button
-            title="INSERIR NOVO PET"
-            color="green"
-            onPress={() => {
-              props.navigation.navigate({
-                routeName: 'PetInsert',
-              });
-            }}
-          />
-          <Button
-            title="ADD PET JÁ CADASTRADO"
-            color="#836FFF"
-            onPress={() => {
-              props.navigation.navigate({
-                routeName: 'PetCompartilhado',
-              });
-            }}
-          />
-        </View>
-        {pet.pet.map(pet => (
+        {data.solicitacao.map(sol => (
           <View style={styles.listItem}>
             <ListItem
               leftAvatar={{
-                title: pet.nome,
+                title: sol.nomeFantasia,
                 size: 'xlarge',
-                source: { uri: pet.foto },
-                showAccessory: true,
+                source: { uri: sol.foto },
+                showAccessory: false,
               }}
-              title={pet.nome}
-              subtitle={pet.raca}
+              title={sol.descricao}
+              subtitle={sol.status}
               onPress={() => {
                 props.navigation.navigate({
-                  routeName: 'PetEdit', params: {
-                    PetData: pet
+                  routeName: 'Avalia', params: {
+                    SolData: sol
                   }
                 });
               }}
